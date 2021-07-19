@@ -1,7 +1,7 @@
-package com.kennethss.store.sample
+package com.github.kennethss.store.sample
 
 import android.app.Application
-import com.kennethss.store.Store
+import com.github.kennethss.Store
 
 class App : Application() {
   override fun onCreate() {

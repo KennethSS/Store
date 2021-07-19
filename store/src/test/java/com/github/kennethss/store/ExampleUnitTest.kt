@@ -1,4 +1,4 @@
-package com.kennethss.store.sample
+package com.github.kennethss.store
 
 import org.junit.Test
 

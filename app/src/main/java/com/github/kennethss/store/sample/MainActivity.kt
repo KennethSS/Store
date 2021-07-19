@@ -1,11 +1,11 @@
-package com.kennethss.store.sample
+package com.github.kennethss.store.sample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.kennethss.store.getStore
-import com.kennethss.store.sample.databinding.ActivityMainBinding
-import com.kennethss.store.setStore
+import com.github.kennethss.getStore
+import com.github.kennethss.store.sample.databinding.ActivityMainBinding
+import com.github.kennethss.setStore
 
 class MainActivity : AppCompatActivity() {
   lateinit var binding: ActivityMainBinding

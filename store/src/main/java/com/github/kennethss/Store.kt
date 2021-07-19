@@ -1,4 +1,4 @@
-package com.kennethss.store
+package com.github.kennethss
 
 import android.content.Context
 
@@ -8,12 +8,12 @@ object Store {
   private var preferencesName: String? = null
 
   fun context(context: Context): Store {
-    this.applicationContext = context
+    applicationContext = context
     return this
   }
 
   fun preferencesName(name: String): Store {
-    this.preferencesName = name
+    preferencesName = name
     return this
   }
 

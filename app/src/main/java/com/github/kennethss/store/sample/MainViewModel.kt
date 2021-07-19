@@ -1,7 +1,7 @@
-package com.kennethss.store.sample
+package com.github.kennethss.store.sample
 
 import androidx.lifecycle.ViewModel
-import com.kennethss.store.getStore
+import com.github.kennethss.getStore
 
 class MainViewModel : ViewModel() {
   init {

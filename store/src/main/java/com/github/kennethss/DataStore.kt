@@ -1,4 +1,4 @@
-package com.kennethss.store
+package com.github.kennethss
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.findViewTreeLifecycleOwner
+import com.github.kennethss.StoreHelper.getValueForLifeCycleOwner
 
 class StoreSwitch @JvmOverloads constructor(
   context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0

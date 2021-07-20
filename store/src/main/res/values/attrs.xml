@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="StoreSwitch">
+    <attr name="key" format="string" />
+    <attr name="default_value" format="boolean" />
+  </declare-styleable>
+</resources>

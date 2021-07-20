@@ -3,16 +3,18 @@ package com.github.kennethss
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.Flow
+import com.github.kennethss.StoreHelper.getValueForLifeCycleOwner
+import com.github.kennethss.StoreHelper.saveCastedPreferenceKeyAndValue
+import com.github.kennethss.StoreHelper.valueForType
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Store.getPreferenceName())
@@ -24,21 +26,7 @@ suspend fun Context.writeToStore(key: String, value: Any) {
   }
 }
 
-inline fun <reified T> LifecycleOwner.getValueForLifeCycleOwner(
-  context: Context,
-  key: String,
-  crossinline action: (value: T?) -> Unit
-) = lifecycleScope.launch {
-  valueForType<T>(context, key).collectLatest { value ->
-    if (value != null) {
-      action(value as T)
-    } else {
-      action(value)
-    }
-  }
-}
-
-private fun LifecycleOwner.setValueForLifeCycleOwner(context: Context, key: String, value: Any) =
+fun LifecycleOwner.setValueForLifeCycleOwner(context: Context, key: String, value: Any) =
   lifecycleScope.launch {
     context.writeToStore(key, value)
   }
@@ -82,34 +70,3 @@ inline fun <reified T : Any> ViewModel.getStore(
     }
 }
 
-inline fun <reified T> valueForType(context: Context, key: String) = when (T::class) {
-  Int::class -> context.loadPreference(intPreferencesKey(key))
-  Long::class -> context.loadPreference(longPreferencesKey(key))
-  Float::class -> context.loadPreference(floatPreferencesKey(key))
-  Double::class -> context.loadPreference(doublePreferencesKey(key))
-  Boolean::class -> context.loadPreference(booleanPreferencesKey(key))
-  String::class -> context.loadPreference(stringPreferencesKey(key))
-  else -> throw ClassCastException()
-}
-
-inline fun <reified T> Context.loadPreference(
-  key: Preferences.Key<T>
-): Flow<T?> {
-  return dataStore.data.map { preference ->
-    preference[key]
-  }
-}
-
-private fun saveCastedPreferenceKeyAndValue(
-  preferences: MutablePreferences,
-  key: String,
-  value: Any
-) = when (value) {
-  is Int -> preferences[intPreferencesKey(key)] = value
-  is Double -> preferences[doublePreferencesKey(key)] = value
-  is String -> preferences[stringPreferencesKey(key)] = value
-  is Boolean -> preferences[booleanPreferencesKey(key)] = value
-  is Float -> preferences[floatPreferencesKey(key)] = value
-  is Long -> preferences[longPreferencesKey(key)] = value
-  else -> throw ClassCastException()
-}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -43,5 +43,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="read" />
+
+
+        <com.github.kennethss.StoreSwitch
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:theme="@style/Widget.AppCompat.CompoundButton.Switch"
+          app:key="@string/some_key"
+          app:default_value="true"/>
     </LinearLayout>
 </layout>

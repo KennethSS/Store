@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Store.getPreferenceName())
 
-
 // Write
 suspend fun Context.writeToStore(key: String, value: Any) {
   dataStore.edit { preferences ->
@@ -28,10 +27,14 @@ suspend fun Context.writeToStore(key: String, value: Any) {
 inline fun <reified T> LifecycleOwner.getValueForLifeCycleOwner(
   context: Context,
   key: String,
-  crossinline action: (value: T) -> Unit
+  crossinline action: (value: T?) -> Unit
 ) = lifecycleScope.launch {
-  valueForType<T>(context, key).collectLatest {
-    action(it as T)
+  valueForType<T>(context, key).collectLatest { value ->
+    if (value != null) {
+      action(value as T)
+    } else {
+      action(value)
+    }
   }
 }
 
@@ -39,10 +42,6 @@ private fun LifecycleOwner.setValueForLifeCycleOwner(context: Context, key: Stri
   lifecycleScope.launch {
     context.writeToStore(key, value)
   }
-
-fun ViewModel.setStore(key: String, value: Any) = viewModelScope.launch {
-  Store.getApplicationContext().writeToStore(key, value)
-}
 
 fun AppCompatActivity.setStore(key: String, value: Any) {
     setValueForLifeCycleOwner(this, key, value)
@@ -52,26 +51,34 @@ fun Fragment.setStore(key: String, value: Any) {
     viewLifecycleOwner.setValueForLifeCycleOwner(requireContext(), key, value)
 }
 
+fun ViewModel.setStore(key: String, value: Any) = viewModelScope.launch {
+  Store.getApplicationContext().writeToStore(key, value)
+}
+
 inline fun <reified T> AppCompatActivity.getStore(
   key: String,
-  crossinline action: (value: T) -> Unit
+  crossinline action: (value: T?) -> Unit
 ) {
   getValueForLifeCycleOwner(this, key, action)
 }
 
 inline fun <reified T> Fragment.getStore(
     key: String,
-    crossinline action: (value: T) -> Unit
+    crossinline action: (value: T?) -> Unit
 ) {
     viewLifecycleOwner.getValueForLifeCycleOwner(requireContext(), key, action)
 }
 
 inline fun <reified T : Any> ViewModel.getStore(
     key: String,
-    crossinline action: (value: T) -> Unit
+    crossinline action: (value: T?) -> Unit
 ) = viewModelScope.launch {
-    valueForType<T>(Store.getApplicationContext(), key).collectLatest {
-        action(it as T)
+    valueForType<T>(Store.getApplicationContext(), key).collectLatest { value ->
+      if (value != null) {
+        action(value as T)
+      } else {
+        action(value)
+      }
     }
 }
 

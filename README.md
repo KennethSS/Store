@@ -1,7 +1,7 @@
 <h1 align="center">Store</h1></br>
 
 <p align="center">
-🗳 Easier than SharedPreferences with 🚀Jetpack DataStore(Jetpack)
+🗳 Easier than SharedPreferences with 🚀Jetpack DataStore
 </p>
 
 

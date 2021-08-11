@@ -8,9 +8,11 @@
 
 
 
+
 <p align="center">
   <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
 </p>
+
 
 
 ### Why DataStore?
@@ -47,6 +49,19 @@ dependencies {
 ```groovy
 implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
 implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
+```
+
+
+
+## Install(application)
+
+```kotlin
+class App : Application() {
+  override fun onCreate() {
+    super.onCreate()
+    Store.context(this).preferencesName("preferences_name")
+  }
+}
 ```
 
 

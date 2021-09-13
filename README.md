@@ -83,7 +83,7 @@ And add a dependency code to your **module**'s `build.gradle` file
 
 ```groovy
 dependencies {
-  implementation 'com.github.kennethss:store:1.0.1'
+  implementation 'com.github.kennethss:store:1.0.4'
 }
 ```
 

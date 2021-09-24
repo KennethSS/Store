@@ -3,6 +3,8 @@ package com.github.kennethss
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
+import androidx.datastore.migrations.SharedPreferencesMigration
+import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
@@ -17,7 +19,14 @@ import com.github.kennethss.StoreHelper.valueForType
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Store.getPreferenceName())
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+  name = Store.getPreferenceName(),
+  produceMigrations = { context ->
+    Store.getMigrationsNames().map { name ->
+      SharedPreferencesMigration(context, name)
+    }
+  }
+)
 
 // Write
 suspend fun Context.writeToStore(key: String, value: Any) {
@@ -32,11 +41,11 @@ fun LifecycleOwner.setValueForLifeCycleOwner(context: Context, key: String, valu
   }
 
 fun AppCompatActivity.setStore(key: String, value: Any) {
-    setValueForLifeCycleOwner(this, key, value)
+  setValueForLifeCycleOwner(this, key, value)
 }
 
 fun Fragment.setStore(key: String, value: Any) {
-    viewLifecycleOwner.setValueForLifeCycleOwner(requireContext(), key, value)
+  viewLifecycleOwner.setValueForLifeCycleOwner(requireContext(), key, value)
 }
 
 fun ViewModel.setStore(key: String, value: Any) = viewModelScope.launch {
@@ -51,22 +60,22 @@ inline fun <reified T> AppCompatActivity.getStore(
 }
 
 inline fun <reified T> Fragment.getStore(
-    key: String,
-    crossinline action: (value: T?) -> Unit
+  key: String,
+  crossinline action: (value: T?) -> Unit
 ) {
-    viewLifecycleOwner.getValueForLifeCycleOwner(requireContext(), key, action)
+  viewLifecycleOwner.getValueForLifeCycleOwner(requireContext(), key, action)
 }
 
 inline fun <reified T : Any> ViewModel.getStore(
-    key: String,
-    crossinline action: (value: T?) -> Unit
+  key: String,
+  crossinline action: (value: T?) -> Unit
 ) = viewModelScope.launch {
-    valueForType<T>(Store.getApplicationContext(), key).collectLatest { value ->
-      if (value != null) {
-        action(value as T)
-      } else {
-        action(value)
-      }
+  valueForType<T>(Store.getApplicationContext(), key).collectLatest { value ->
+    if (value != null) {
+      action(value as T)
+    } else {
+      action(value)
     }
+  }
 }
 
